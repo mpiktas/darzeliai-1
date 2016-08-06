@@ -1,6 +1,7 @@
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 library(zoo)
+library(ggplot2)
 
 #~~~Data input
 
@@ -30,4 +31,8 @@ laukiantys$date <- substr(laukiantys$Prašymo.pateikimo.data,1,10)
 
 laukiantys$kiek.laukia <- (as.yearmon(Sys.Date()) - as.yearmon(laukiantys[,"date"]))
 
+ggplot(laukiantys, aes(x = kiek.laukia, fill = Prioritetas..deklaruotas.mieste.))  +
+  geom_histogram(binwidth = 0.25) +
+  xlab("Kiek metų jau laukia savo eilės šiai dienai") +
+  ylab("Vaikų skaičius")
 

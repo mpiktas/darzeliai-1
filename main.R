@@ -1,5 +1,7 @@
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
+library(zoo)
+
 #~~~Data input
 
 laukiantys <- read.csv(file="data/laukianciuju_eileje_ataskaita.csv",sep = ";",encoding="UTF-8")
@@ -22,7 +24,10 @@ jau.gave <- visi.vaikai[which(duplicated(visi.vaikai$Vaiko.Identifikacinis.Nr.))
 jau.gave.id <- as.vector(jau.gave[,1])
 laukiantys <- laukiantys[-which(laukiantys$Vaiko.Identifikacinis.Nr. %in% jau.gave.id),]
 
+#~Laukiantys analysis
 
+laukiantys$date <- substr(laukiantys$Prašymo.pateikimo.data,1,10)
 
+laukiantys$kiek.laukia <- (as.yearmon(Sys.Date()) - as.yearmon(laukiantys[,"date"]))
 
 

@@ -10,11 +10,19 @@ vaikai_grup <- read.csv(file="data/lankanciu_vaiku_ataskaita_pagal_grupes.csv",s
 lankomumas <- read.csv(file="data/lankomumo_ziniarasciai_2016-07-01-2016-07-31.csv",sep = ";", encoding="UTF-8")
 prasymai <- read.csv(file="data/visi_prasymai.csv", encoding="UTF-8")
 
-#~~~Data checks
+#~Data checks & corrections
+
+#~~If there are duplicates between lankomumas and laukiantys, the corresponding row is removed from laukiantys
 
 seni.vaikai <- lankomumas[,c("Vaiko.Identifikacinis.Nr.","Darželio.pavadinimas")]
 nauji.vaikai <- laukiantys[,c("Vaiko.Identifikacinis.Nr.","X1.pasirinktas.darželis")]
 colnames(nauji.vaikai)[which(names(nauji.vaikai) == "X1.pasirinktas.darželis")] <- "Darželio.pavadinimas"
 visi.vaikai <- rbind(seni.vaikai,nauji.vaikai)
-visi.vaikai[which(duplicated(visi.vaikai))]
+jau.gave <- visi.vaikai[which(duplicated(visi.vaikai$Vaiko.Identifikacinis.Nr.)),]
+jau.gave.id <- as.vector(jau.gave[,1])
+laukiantys <- laukiantys[-which(laukiantys$Vaiko.Identifikacinis.Nr. %in% jau.gave.id),]
+
+
+
+
 

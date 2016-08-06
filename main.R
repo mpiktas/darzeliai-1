@@ -1,3 +1,4 @@
+
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 library(zoo)
@@ -35,4 +36,22 @@ ggplot(laukiantys, aes(x = kiek.laukia, fill = Prioritetas..deklaruotas.mieste.)
   geom_histogram(binwidth = 0.25) +
   xlab("Kiek metų jau laukia savo eilės šiai dienai") +
   ylab("Vaikų skaičius")
+
+ggplot(laukiantys, aes(x = kiek.laukia, fill = Prioritetas..deklaruotas.mieste.)) +
+  geom_histogram(binwidth = 0.25) +
+  facet_wrap(~Vaiko.seniunija) + 
+  ggtitle("Vaiko seniūnija") +
+  xlab("Kiek metų jau laukia savo eilės šiai dienai") +
+  ylab("Vaikų skaičius")
+
+
+
+
+
+
+
+
+
+
+
 

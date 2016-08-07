@@ -59,14 +59,21 @@ ggplot(laukiantys, aes(x = kiek.laukia, fill = Prioritetas..deklaruotas.mieste.)
 
 laukiantys$amzius <- (as.yearmon(Sys.Date()) - as.yearmon(laukiantys[,"Vaiko.gimimo.data"]))
 
-ggplot(laukiantys, aes(x = kiek.laukia, fill = Prioritetas..deklaruotas.mieste.))  +
+ggplot(laukiantys, aes(x = amzius, fill = Prioritetas..deklaruotas.mieste.))  +
   geom_histogram(binwidth = 1) +
   labs(x="Vaiko amžius",y="Vaikų skaičius",
        fill="Gyvenamoji vieta deklaruota mieste")
 
 #~~Kokio amžiaus vaikai yra laukiančiųjų sąraše pagal seniūnijas
 
+ggplot(laukiantys, aes(x = amzius, fill = Prioritetas..deklaruotas.mieste.)) +
+  geom_histogram(binwidth = 0.5) +
+  facet_wrap(~Vaiko.seniunija) + 
+  ggtitle("Vaiko seniūnija") +
+  labs(x="Vaiko amžius",y="Vaikų skaičius",
+       fill="Gyvenamoji vieta deklaruota mieste")
 
+#~~Kiek iš viso seniūnijose yra vietų pagal jau lankančiųjų statistiką
 
 print("Laukiantys analysis done")
 

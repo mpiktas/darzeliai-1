@@ -2,6 +2,7 @@
 #setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 library(zoo)
 library(ggplot2)
+library(plyr)
 
 #~~~Data input
 print("Data input")
@@ -73,9 +74,47 @@ ggplot(laukiantys, aes(x = amzius, fill = Prioritetas..deklaruotas.mieste.)) +
   labs(x="Vaiko amžius",y="Vaikų skaičius",
        fill="Gyvenamoji vieta deklaruota mieste")
 
-#~~Kiek iš viso seniūnijose yra vietų pagal jau lankančiųjų statistiką
-
 print("Laukiantys analysis done")
+
+#~~Prie lankomumo statistikos pridedu papildomą informaciją
+#~~~Prie lankomumo statistikos pridedu papildomą informaciją apie darželius
+
+print("Lankomumo analysis")
+
+colnames(darzeliai)[which(names(darzeliai) == "LABEL")] <- "Darželio.pavadinimas"
+lankomumas <- join(lankomumas, darzeliai, by = "Darželio.pavadinimas")
+
+#~~~Prie lankomumo statistikos pridedu papildomą informaciją apie grupes
+colnames(lankomumas)[which(names(lankomumas) == "X.U.FEFF.ID")] <- "SCHOOL_ID"
+colnames(grupes)[which(names(grupes) == "LABEL")] <- "Grupės.pavadinimas"
+lankomumas$raktas <- paste0(lankomumas$Grupės.pavadinimas,lankomumas$SCHOOL_ID)
+grupes$raktas <- paste0(grupes$Grupės.pavadinimas,grupes$SCHOOL_ID)
+lankomumas <- join(lankomumas,grupes, by = "raktas", type = "left", match = "first")
+
+#~Vaikai pagal grupių amžių
+ggplot(lankomumas, aes(x = TYPE)) +
+  stat_count(width = 1) +
+  ggtitle("Vaiko seniūnija") +
+  xlab("Grupės amžiaus intervalas") +
+  ylab("Vaikų skaičius")
+
+#~Vaikai pagal amžių
+#~~Susirandam iš prašymų vaikų amžių
+lankomumas <- join(lankomumas,prasymai, by = "Vaiko.Identifikacinis.Nr.", type = "left", match = "first")
+
+lankomumas$amzius <- (as.yearmon(Sys.Date()) - as.yearmon(lankomumas[,"Vaiko.gimimo.data"]))
+
+ggplot(lankomumas, aes(x = amzius)) +
+  geom_histogram(binwidth = 1) +
+  labs(x="Vaiko amžius",y="Vaikų skaičius")
+
+ggplot(lankomumas, aes(x = amzius)) +
+  geom_histogram(binwidth = 1) +
+  facet_wrap(~Vaiko.seniunija) + 
+  ggtitle("Vaiko seniūnija") +
+  labs(x="Vaiko amžius",y="Vaikų skaičius")
+
+print("Lankomumo analysis done")
 
 
 

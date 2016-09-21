@@ -66,7 +66,16 @@ ggplot(lankomumas, aes(x = TYPE)) +
 #~~Susirandam iš prašymų vaikų amžių
 lankomumas <- join(lankomumas,prasymai, by = "Vaiko.Identifikacinis.Nr.", type = "left", match = "first")
 
+#gaunam tikslią datą prašymo pateikimo
+lankomumas$pateikimo.data <- substr(lankomumas$Prašymo.pateikimo.data,1,10)
+
+#gaunam kiek buvo laukta nuo prašymo pateikimo iki priėmimo į darželį
+lankomumas$laukta.eileje <- (as.yearmon(lankomumas$Lankymo.data)
+                                   - as.yearmon(lankomumas$pateikimo.data))
+
 lankomumas$amzius <- (as.yearmon(Sys.Date()) - as.yearmon(lankomumas[,"Vaiko.gimimo.data"]))
+
+lankomumas$amzius.pareiskiant <- (as.yearmon(lankomumas$pateikimo.data) - as.yearmon(lankomumas[,"Vaiko.gimimo.data"]))
 
 ggplot(lankomumas, aes(x = amzius)) +
   geom_histogram(binwidth = 1) +

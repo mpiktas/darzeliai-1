@@ -69,4 +69,4 @@ head(res)
 p <- ggplot(res, aes(values, amzius.pareiskiant, fill = ind, colou=ind))
 p + geom_point()
 
-# # print("Paieška kyšius imančių darželių baigta")
+print("Paieška kyšius imančių darželių neužbaigta, bet nieko baisaus")
